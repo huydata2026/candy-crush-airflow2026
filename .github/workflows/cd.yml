@@ -1,0 +1,21 @@
+name: CD
+
+on:
+  push:
+    branches: [main] # chạy sau khi merge PR vào main
+  workflow_dispatch: # cho phép bấm Run workflow bằng tay
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            cd ~/candy-crush-airflow
+            git pull
+            docker compose up -d --build
